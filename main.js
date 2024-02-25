@@ -1,6 +1,3 @@
-const process = require("process");
-const readline = require("readline");
-
 const prompt = require("prompt-sync")({ sigint: true });
 
 const hat = "^";
@@ -9,8 +6,8 @@ const fieldCharacter = "░";
 const pathCharacter = "*";
 
 class Field {
-  constructor(field) {
-    this._field = field;
+  constructor() {
+    this._field;
     this.currentPosition = [];
     this.gameOver = false;
     this.gameWon = false;
@@ -114,46 +111,76 @@ class Field {
     );
   }
 
+  generateField(width, height) {
+    const newField = [];
+    const createRow = () => {
+      const row = [];
+      for (let i = 0; i < width; i++) {
+        const prob = Math.random();
+        if (prob < 0.3) {
+          row.push(hole);
+        } else {
+          row.push(fieldCharacter);
+        }
+      }
+      return row;
+    };
+    for (let i = 0; i < height; i++) {
+      newField.push(createRow());
+    }
+    newField[0][0] = pathCharacter;
+    newField[height-1][width-1] = hat;
+    this._field = newField;
+  }
+
   playGame() {
+    this.generateField(15, 20)
     this.print();
     this.getCurrentPosition();
     console.log(
-      "Find your hat (^), without falling into a hole or going out of boudns.\nWrite 'u' for Up, 'd' for Down, 'l' for Left, 'r' for Right."
+      "Find your hat (^), without falling into a hole or going out of boudns.\nWrite 'w' for Up, 's' for Down, 'a' for Left, 'd' for Right."
     );
     while (!this.gameOver) {
       const direction = prompt("where to go? ");
       switch (direction) {
-        case "u":
+        case "w":
           this.moveUp(...this.currentPosition);
           this.getCurrentPosition();
           if (!this.gameOver) {
+            console.clear()
+
+            this.print();
+          }
+          break;
+        case "s":
+          this.moveDown(...this.currentPosition);
+          this.getCurrentPosition();
+          if (!this.gameOver) {
+            console.clear()
+
             this.print();
           }
           break;
         case "d":
-          this.moveDown(...this.currentPosition);
-          this.getCurrentPosition();
-          if (!this.gameOver) {
-            this.print();
-          }
-          break;
-        case "r":
           this.moveRight(...this.currentPosition);
           this.getCurrentPosition();
           if (!this.gameOver) {
+            console.clear()
             this.print();
           }
           break;
-        case "l":
+        case "a":
           this.moveLeft(...this.currentPosition);
           this.getCurrentPosition();
           if (!this.gameOver) {
+            console.clear()
             this.print();
+
           }
           break;
         default:
           console.log(
-            "Write 'u' for Up, 'd' for Down, 'l' for Left, 'r' for Right.."
+            "Write 'w' for Up, 's' for Down, 'a' for Left, 'd' for Right.."
           );
       }
     }
@@ -172,5 +199,6 @@ exampleField = [
   [fieldCharacter, hat, fieldCharacter],
 ];
 
-const fieldTest = new Field(exampleField);
+const fieldTest = new Field();
+
 fieldTest.playGame();
