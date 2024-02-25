@@ -1,5 +1,5 @@
 const prompt = require("prompt-sync")({ sigint: true });
-
+const process = require("process");
 const hat = "^";
 const hole = "O";
 const fieldCharacter = "░";
@@ -117,7 +117,7 @@ class Field {
       const row = [];
       for (let i = 0; i < width; i++) {
         const prob = Math.random();
-        if (prob < 0.3) {
+        if (prob < 0.25) {
           row.push(hole);
         } else {
           row.push(fieldCharacter);
@@ -129,12 +129,12 @@ class Field {
       newField.push(createRow());
     }
     newField[0][0] = pathCharacter;
-    newField[height-1][width-1] = hat;
+    newField[height - 1][width - 1] = hat;
     this._field = newField;
   }
 
-  playGame() {
-    this.generateField(15, 20)
+  playGame(width, height) {
+    this.generateField(width, height);
     this.print();
     this.getCurrentPosition();
     console.log(
@@ -147,7 +147,7 @@ class Field {
           this.moveUp(...this.currentPosition);
           this.getCurrentPosition();
           if (!this.gameOver) {
-            console.clear()
+            console.clear();
 
             this.print();
           }
@@ -156,7 +156,7 @@ class Field {
           this.moveDown(...this.currentPosition);
           this.getCurrentPosition();
           if (!this.gameOver) {
-            console.clear()
+            console.clear();
 
             this.print();
           }
@@ -165,7 +165,7 @@ class Field {
           this.moveRight(...this.currentPosition);
           this.getCurrentPosition();
           if (!this.gameOver) {
-            console.clear()
+            console.clear();
             this.print();
           }
           break;
@@ -173,9 +173,8 @@ class Field {
           this.moveLeft(...this.currentPosition);
           this.getCurrentPosition();
           if (!this.gameOver) {
-            console.clear()
+            console.clear();
             this.print();
-
           }
           break;
         default:
@@ -193,6 +192,9 @@ class Field {
   }
 }
 
+const fieldWidth = new Number(process.argv[2]);
+const fieldHeight = new Number(process.argv[3]);
+
 exampleField = [
   [pathCharacter, fieldCharacter, hole],
   [fieldCharacter, hole, fieldCharacter],
@@ -201,4 +203,4 @@ exampleField = [
 
 const fieldTest = new Field();
 
-fieldTest.playGame();
+fieldTest.playGame(fieldWidth, fieldHeight);
